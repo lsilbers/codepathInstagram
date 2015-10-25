@@ -1,6 +1,7 @@
 package com.lsilberstein.codepathinstagramclient;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -19,14 +20,23 @@ import java.util.ArrayList;
 import cz.msebera.android.httpclient.Header;
 
 public class InstagramClientActivity extends AppCompatActivity {
+    private static final String TAG = "InstagramClient";
     private ArrayList<Post> posts;
     private PostAdapter aPhotos;
     private ListView lvPhotos;
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photos);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchPopularPhotos();
+            }
+        });
 
         // get the view
         lvPhotos = (ListView) findViewById(R.id.lvPhotos);
@@ -48,18 +58,20 @@ public class InstagramClientActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    Log.i("PA", "Successfully retrieved data");
+                    Log.i(TAG, "Successfully retrieved data");
                     ArrayList<Post> returnedPosts = InstagramClientUtils.toPhotos(response);
                     aPhotos.addAll(returnedPosts);
-                    Log.i("PA", "Added Photos");
+                    Log.i(TAG, "Added Photos");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.e(TAG, "failed with status code " + statusCode + " and response string:\n" + responseString);
+                swipeContainer.setRefreshing(false);
             }
         });
     }

@@ -40,7 +40,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.userProfile.setImageResource(0);
+        viewHolder.userProfile.setImageResource(R.drawable.image_placeholder);
         Picasso.with(getContext()).load(post.user.pictureUrl)
                 .transform(new CircleTransformation()).into(viewHolder.userProfile);
 
