@@ -60,6 +60,7 @@ public class InstagramClientActivity extends AppCompatActivity {
                 try {
                     Log.i(TAG, "Successfully retrieved data");
                     ArrayList<Post> returnedPosts = InstagramClientUtils.toPhotos(response);
+                    aPhotos.clear();
                     aPhotos.addAll(returnedPosts);
                     Log.i(TAG, "Added Photos");
                 } catch (JSONException e) {
