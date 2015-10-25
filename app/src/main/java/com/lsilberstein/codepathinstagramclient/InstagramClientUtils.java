@@ -2,6 +2,9 @@ package com.lsilberstein.codepathinstagramclient;
 
 import android.util.Log;
 
+import com.lsilberstein.codepathinstagramclient.Model.InstagramUser;
+import com.lsilberstein.codepathinstagramclient.Model.Post;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,8 +24,8 @@ public class InstagramClientUtils {
         return POPULAR_ENDPOINT+PARAM_CLIENT_ID+CLIENT_ID;
     }
 
-    public static ArrayList<Photo> toPhotos(JSONObject response) throws JSONException {
-        ArrayList<Photo> photos = new ArrayList<>();
+    public static ArrayList<Post> toPhotos(JSONObject response) throws JSONException {
+        ArrayList<Post> posts = new ArrayList<>();
         JSONObject entry = null;
         JSONArray data = response.getJSONArray("data");
         for (int i = 0; i < data.length(); i++) {
@@ -51,22 +54,25 @@ public class InstagramClientUtils {
 
                 // get the username
                 String username = entry.getJSONObject("user").getString("username");
+                String pictureUrl = entry.getJSONObject("user").getString("profile_picture");
 
                 // get the image url
                 String image = entry.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
 
-                // construct the photo and add it to the list
-                Photo photo = new Photo();
-                photo.caption = caption;
-                photo.user = username;
-                photo.imageUrl = image;
-                photo.type = type;
-                photos.add(photo);
+                // construct the post and add it to the list
+                Post post = new Post();
+                post.caption = caption;
+                post.user = new InstagramUser();
+                post.user.username = username;
+                post.user.pictureUrl = pictureUrl;
+                post.imageUrl = image;
+                post.type = type;
+                posts.add(post);
             } catch (JSONException e) {
                 Log.e("Utils", "Bad data for object number " + i);
             }
         }
 
-        return photos;
+        return posts;
     }
 }

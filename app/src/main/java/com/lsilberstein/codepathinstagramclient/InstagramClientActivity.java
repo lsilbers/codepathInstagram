@@ -9,6 +9,7 @@ import android.widget.ListView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.lsilberstein.codepathinstagramclient.Model.Post;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,9 +18,9 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class PhotosActivity extends AppCompatActivity {
-    private ArrayList<Photo> photos;
-    private PhotoAdapter aPhotos;
+public class InstagramClientActivity extends AppCompatActivity {
+    private ArrayList<Post> posts;
+    private PostAdapter aPhotos;
     private ListView lvPhotos;
 
     @Override
@@ -30,9 +31,9 @@ public class PhotosActivity extends AppCompatActivity {
         // get the view
         lvPhotos = (ListView) findViewById(R.id.lvPhotos);
 
-        photos = new ArrayList<>();
+        posts = new ArrayList<>();
         // construct the adapter
-        aPhotos = new PhotoAdapter(this, photos);
+        aPhotos = new PostAdapter(this, posts);
         // set the adapter for the view
         lvPhotos.setAdapter(aPhotos);
         // retrieve the data to display
@@ -48,8 +49,8 @@ public class PhotosActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     Log.i("PA", "Successfully retrieved data");
-                    ArrayList<Photo> returnedPhotos = InstagramClientUtils.toPhotos(response);
-                    aPhotos.addAll(returnedPhotos);
+                    ArrayList<Post> returnedPosts = InstagramClientUtils.toPhotos(response);
+                    aPhotos.addAll(returnedPosts);
                     Log.i("PA", "Added Photos");
                 } catch (JSONException e) {
                     e.printStackTrace();
