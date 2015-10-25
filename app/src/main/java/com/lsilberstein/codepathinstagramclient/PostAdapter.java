@@ -1,6 +1,7 @@
 package com.lsilberstein.codepathinstagramclient;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,26 +26,39 @@ public class PostAdapter extends ArrayAdapter<Post> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_post, parent, false);
-        }
         Post post = getItem(position);
-        ImageView ivUser = (ImageView) convertView.findViewById(R.id.ivUser);
-        ivUser.setImageResource(0);
-        Picasso.with(getContext()).load(post.user.pictureUrl).transform(new CircleTransformation()).into(ivUser);
+        ViewHolder viewHolder;
+        if(convertView == null) {
+            viewHolder = new ViewHolder();
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_post, parent, false);
+            viewHolder.userProfile = (ImageView) convertView.findViewById(R.id.ivUser);
+            viewHolder.username = (TextView) convertView.findViewById(R.id.tvUsername);
+            viewHolder.caption = (TextView) convertView.findViewById(R.id.tvCaption);
+            viewHolder.photo = (ImageView) convertView.findViewById(R.id.ivPhoto);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
 
-        TextView tvUsername = (TextView) convertView.findViewById(R.id.tvUsername);
-        tvUsername.setText(post.user.username);
-        TextView tvAuthor = (TextView) convertView.findViewById(R.id.tvAuthor);
-        tvAuthor.setText(post.user.username);
-        TextView tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
-        tvCaption.setText(post.caption);
+        viewHolder.userProfile.setImageResource(0);
+        Picasso.with(getContext()).load(post.user.pictureUrl)
+                .transform(new CircleTransformation()).into(viewHolder.userProfile);
 
-        ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.ivPhoto);
-        ivPhoto.setImageResource(0);
+        viewHolder.username.setText(post.user.username);
 
-        Picasso.with(getContext()).load(post.imageUrl).into(ivPhoto);
+        String htmlCaption = "<font color=\"#125688\">"+post.user.username+"</font>  " + post.caption;
+        viewHolder.caption.setText(Html.fromHtml(htmlCaption));
+
+        viewHolder.photo.setImageResource(0);
+        Picasso.with(getContext()).load(post.imageUrl).into(viewHolder.photo);
 
         return convertView;
+    }
+
+    private static class ViewHolder {
+        public ImageView userProfile;
+        public ImageView photo;
+        public TextView username;
+        public TextView caption;
     }
 }
