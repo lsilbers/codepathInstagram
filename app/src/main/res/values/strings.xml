@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Basic Instagram Client</string>
     <string name="action_settings">Settings</string>
+    <string name="likes">likes</string>
+    <string name="likesSingle">likes this</string>
+    <string name="likesMany">like this</string>
 </resources>

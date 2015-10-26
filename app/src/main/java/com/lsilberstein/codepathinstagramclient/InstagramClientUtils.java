@@ -1,8 +1,10 @@
 package com.lsilberstein.codepathinstagramclient;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.lsilberstein.codepathinstagramclient.Model.InstagramUser;
+import com.lsilberstein.codepathinstagramclient.Model.Likes;
 import com.lsilberstein.codepathinstagramclient.Model.Post;
 
 import org.json.JSONArray;
@@ -59,6 +61,23 @@ public class InstagramClientUtils {
                 // get the image url
                 String image = entry.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
 
+                // get the likes data
+                Likes likes = new Likes();
+                int count = entry.getJSONObject("likes").getInt("count");
+                likes.count = count;
+                if(count < 10) {
+                    // for small numbers of likes we will display the people who liked it
+                    ArrayList<String> likers = new ArrayList<>();
+                    JSONArray likeData = entry.getJSONObject("likes").getJSONArray("data");
+                    for (i = 0; i < likeData.length(); i++){
+                        likers.add(likeData.getJSONObject(i).getString("username"));
+                    }
+                    likes.topLikers = likers;
+                }
+
+                // get the age of the post
+                long createdTime = entry.getLong("created_time");
+
                 // construct the post and add it to the list
                 Post post = new Post();
                 post.caption = caption;
@@ -67,6 +86,8 @@ public class InstagramClientUtils {
                 post.user.pictureUrl = pictureUrl;
                 post.imageUrl = image;
                 post.type = type;
+                post.likes = likes;
+                post.createdTime = createdTime;
                 posts.add(post);
             } catch (JSONException e) {
                 Log.e("Utils", "Bad data for object number " + i);
@@ -74,5 +95,35 @@ public class InstagramClientUtils {
         }
 
         return posts;
+    }
+
+
+    public static String formatUsernameHtml(Context context, String username) {
+        return "<font color=\""+context.getResources().getColor(R.color.username)+"\">"
+                + username + "</font>";
+    }
+
+    public static String formatLikesHtml(Context context, int count) {
+        return "<font color=\""+context.getResources().getColor(R.color.likes)+"\">" + count
+                + "</font> " + context.getResources().getString(R.string.likes);
+    }
+
+    public static String formatLikesHtml(Context context, ArrayList<String> likers) {
+        int likesColour = context.getResources().getColor(R.color.likes);
+        int usernameColour = context.getResources().getColor(R.color.username);
+        StringBuilder builder = new StringBuilder("<font color=\"")
+                .append(usernameColour).append("\">");
+        for (String username : likers) {
+            builder.append(username).append(" ");
+        }
+        builder.append("</font>");
+        builder.append("<font color=\"").append(likesColour).append("\">");
+        if (likers.size() > 1) {
+            builder.append(context.getResources().getString(R.string.likesMany));
+        } else {
+            builder.append(context.getResources().getString(R.string.likesSingle));
+        }
+        builder.append("</font>");
+        return builder.toString();
     }
 }
