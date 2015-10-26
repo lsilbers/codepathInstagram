@@ -59,7 +59,8 @@ public class PostAdapter extends ArrayAdapter<Post> {
 
         viewHolder.username.setText(post.user.username);
 
-        String htmlCaption = InstagramClientUtils.formatUsernameHtml(getContext(),post.user.username) + "  " + post.caption;
+        String htmlCaption = InstagramClientUtils.formatUsernameHtml(getContext(),post.user.username)
+                + "  " + InstagramClientUtils.formatCaptionHtml(getContext(),post.caption);
         viewHolder.caption.setText(Html.fromHtml(htmlCaption));
 
         viewHolder.photo.setImageResource(0);

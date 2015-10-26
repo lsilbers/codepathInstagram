@@ -18,6 +18,7 @@ The following **optional** features are implemented:
 * [x] User can **pull to refresh** the list of posts
 * [x] User can **view the likes** of the post or a **short list of likers** if there are few
 * [x] User can **view the relative age of the post**
+* [x] Highlighting of **hashtags and usertags** in the caption
 
 ## Video Walkthrough 
 

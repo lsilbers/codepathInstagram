@@ -126,4 +126,9 @@ public class InstagramClientUtils {
         builder.append("</font>");
         return builder.toString();
     }
+
+    private static String tagMatcher = "(#|@)([A-Za-z0-9-_]+)";
+    public static String formatCaptionHtml(Context context, String caption){
+        return caption.replaceAll(tagMatcher, "<font color=\""+context.getResources().getColor(R.color.tag)+"\">$1$2</font>");
+    }
 }
